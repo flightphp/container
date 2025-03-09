@@ -1,0 +1,4 @@
+*.sublime-*
+vendor
+phpstan.neon
+.phpunit.cache
