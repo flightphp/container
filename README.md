@@ -1,5 +1,12 @@
 # FlightPHP Container
 
+[![Latest Stable Version](http://poser.pugx.org/flightphp/container/v?style=for-the-badge)](https://packagist.org/packages/flightphp/container)
+[![Total Downloads](http://poser.pugx.org/flightphp/container/downloads?style=for-the-badge)](https://packagist.org/packages/flightphp/container)
+[![License](http://poser.pugx.org/flightphp/container/license?style=for-the-badge)](https://packagist.org/packages/flightphp/container)
+[![PHP Version Require](http://poser.pugx.org/flightphp/container/require/php?style=for-the-badge)](https://packagist.org/packages/flightphp/container)
+![phpstan](https://img.shields.io/badge/phpstan-max-green?style=for-the-badge)
+![code coverage](https://img.shields.io/badge/code_coverage-100%25-green?style=for-the-badge)
+
 A lightweight Dependency Injection Container (DIC) for PHP, to manage and streamline object dependencies effectively.
 
 ## Features
