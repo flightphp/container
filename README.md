@@ -37,7 +37,7 @@ To use the FlightPHP Container, you can create a new instance of the container a
 
 require 'vendor/autoload.php';
 
-use Flight\Container;
+use flight\Container;
 
 $container = new Container;
 
@@ -66,7 +66,7 @@ You can use the FlightPHP Container in your FlightPHP application by setting the
 
 require 'vendor/autoload.php';
 
-use Flight\Container;
+use flight\Container;
 
 $container = new Container;
 
@@ -107,7 +107,7 @@ FlightPHP Container can resolve dependencies recursively, allowing you to bind c
 
 require 'vendor/autoload.php';
 
-use Flight\Container;
+use flight\Container;
 
 class User {}
 
