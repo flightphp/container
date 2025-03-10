@@ -70,16 +70,16 @@ use flight\Container;
 
 $container = new Container;
 
-$container->set(PDO::class, fn(): PDO => new PDO(
-  'mysql:host=localhost;dbname',
-  'username',
-  'password'
-));
+$container->set(PDO::class, fn(): PDO => new PDO('sqlite::memory:'));
 
-Flight::registerContainerHandler($container);
+Flight::registerContainerHandler([$container, 'get']);
 
 class TestController {
-  function __construct(private PDO $pdo) {}
+  private PDO $pdo;
+
+  function __construct(PDO $pdo) {
+    $this->pdo = $pdo;
+  }
 
   function index() {
     var_dump($this->pdo);
