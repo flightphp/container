@@ -115,7 +115,8 @@ interface UserRepository {
   function find(int $id): ?User;
 }
 
-class PdoUserRepository implements UserRepository {
+class PdoUserRepository implements UserRepository
+{
   private PDO $pdo;
 
   function __construct(PDO $pdo) {
@@ -124,21 +125,16 @@ class PdoUserRepository implements UserRepository {
 
   function find(int $id): ?User {
     // Implementation ...
+    return null;
   }
 }
 
 $container = new Container;
 
-$container->set(PDO::class, static fn(): PDO => new PDO(
-  'mysql:host=localhost;dbname=test',
-  'username',
-  'password'
-));
-
+$container->set(PDO::class, static fn(): PDO => new PDO('sqlite::memory:'));
 $container->set(UserRepository::class, PdoUserRepository::class);
 
 $userRepository = $container->get(UserRepository::class);
-
 var_dump($userRepository);
 
 /*
