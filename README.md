@@ -115,8 +115,7 @@ interface UserRepository {
   function find(int $id): ?User;
 }
 
-class PdoUserRepository implements UserRepository
-{
+class PdoUserRepository implements UserRepository {
   private PDO $pdo;
 
   function __construct(PDO $pdo) {
