@@ -22,7 +22,7 @@ final class ContainerTest extends TestCase
 
     self::assertInstanceOf(
       DateTimeImmutable::class,
-      $container->get(DateTimeImmutable::class)
+      @$container->get(DateTimeImmutable::class)
     );
   }
 
@@ -50,7 +50,10 @@ final class ContainerTest extends TestCase
     self::assertSame('2025-03-09 07:29:00', $dateTimeImmutable->format('Y-m-d H:i:s'));
   }
 
-  /** @dataProvider nonInstantiableClassStringsDataProvider */
+  /**
+   * @dataProvider nonInstantiableClassStringsDataProvider
+   * @param class-string $class
+   */
   public function test_it_throws_an_exception_when_the_class_is_not_instantiable(
     string $class
   ): void {
@@ -116,7 +119,7 @@ final class ContainerTest extends TestCase
 
     self::assertInstanceOf(
       ExampleClassWithAnNonBuiltinConstructorParameter::class,
-      $container->get(ExampleClassWithAnNonBuiltinConstructorParameter::class)
+      @$container->get(ExampleClassWithAnNonBuiltinConstructorParameter::class)
     );
   }
 
@@ -136,6 +139,7 @@ final class ContainerTest extends TestCase
     $container->get(ExampleClassWithUnionTypeHint::class);
   }
 
+  /** @return array{0: class-string}[] */
   public static function nonInstantiableClassStringsDataProvider(): array
   {
     return [
@@ -164,8 +168,10 @@ final class ExampleClassWithoutConstructorParameters
 
 final class ExampleClassWithoutConstructorParameterTypeHint
 {
+  /** @var mixed */
   public $parameter;
 
+  /** @param mixed $parameter */
   public function __construct($parameter)
   {
     $this->parameter = $parameter;
@@ -174,17 +180,23 @@ final class ExampleClassWithoutConstructorParameterTypeHint
 
 final class ExampleClassWithBuiltinConstructorParameter
 {
+  /** @var int */
+  public $parameter;
+
   public function __construct(int $parameter)
   {
-    // No parameters
+    $this->parameter = $parameter;
   }
 }
 
 final class ExampleClassWithAnNonBuiltinConstructorParameter
 {
+  /** @var DateTimeImmutable */
+  public $dateTime;
+
   public function __construct(DateTimeImmutable $dateTimeImmutable)
   {
-    // No parameters
+    $this->dateTime = $dateTimeImmutable;
   }
 }
 
