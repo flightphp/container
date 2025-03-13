@@ -90,13 +90,12 @@ final class Container implements ContainerInterface
     }
 
     $dependencies = array_map(
-      function (ReflectionParameter $reflectionParameter) use ($id): ?object {
+      function (ReflectionParameter $reflectionParameter) use ($id) {
         $name = $reflectionParameter->getName();
         $type = $reflectionParameter->getType();
-        $isOptional = $reflectionParameter->isOptional();
 
-        if ($isOptional) {
-          return null;
+        if ($reflectionParameter->isOptional()) {
+          return $reflectionParameter->getDefaultValue();
         }
 
         if (!$type) {

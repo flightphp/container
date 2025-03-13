@@ -139,6 +139,16 @@ final class ContainerTest extends TestCase
     $container->get(ExampleClassWithUnionTypeHint::class);
   }
 
+  public function test_it_resolves_optional_non_builtin_classes_constructor_parameters(): void
+  {
+    $container = new Container;
+
+    self::assertInstanceOf(
+      ExampleClassWithAnOptionalConstructorParameter::class,
+      $container->get(ExampleClassWithAnOptionalConstructorParameter::class)
+    );
+  }
+
   /** @return array{0: class-string}[] */
   public static function nonInstantiableClassStringsDataProvider(): array
   {
@@ -180,8 +190,7 @@ final class ExampleClassWithoutConstructorParameterTypeHint
 
 final class ExampleClassWithBuiltinConstructorParameter
 {
-  /** @var int */
-  public $parameter;
+  public int $parameter;
 
   public function __construct(int $parameter)
   {
@@ -191,12 +200,21 @@ final class ExampleClassWithBuiltinConstructorParameter
 
 final class ExampleClassWithAnNonBuiltinConstructorParameter
 {
-  /** @var DateTimeImmutable */
-  public $dateTime;
+  public DateTimeImmutable $dateTime;
 
   public function __construct(DateTimeImmutable $dateTimeImmutable)
   {
     $this->dateTime = $dateTimeImmutable;
+  }
+}
+
+final class ExampleClassWithAnOptionalConstructorParameter
+{
+  public string $parameter;
+
+  public function __construct(string $parameter = 'default')
+  {
+    $this->parameter = $parameter;
   }
 }
 
