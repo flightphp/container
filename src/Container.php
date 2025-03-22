@@ -64,6 +64,7 @@ final class Container implements ContainerInterface
   /**
    * @param class-string $id
    * @throws ContainerExceptionInterface
+   * @throws NotFoundExceptionInterface
    */
   private function resolve(string $id): object
   {
@@ -74,7 +75,7 @@ final class Container implements ContainerInterface
         throw new ContainerException("Class \"$id\" is not instantiable");
       }
     } catch (ReflectionException $reflectionException) {
-      throw new ContainerException("Class \"$id\" does not exist");
+      throw new NotFoundException("Class \"$id\" does not exist");
     }
 
     $constructor = $reflectionClass->getConstructor();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use flight\Container;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 /** @covers flight\Container */
 final class ContainerTest extends TestCase
@@ -30,7 +31,8 @@ final class ContainerTest extends TestCase
   {
     $container = new Container;
 
-    $this->expectException(ContainerExceptionInterface::class);
+    self::expectException(NotFoundExceptionInterface::class);
+    self::expectExceptionMessage('Class "NonExistentClass" does not exist');
 
     $container->get('NonExistentClass'); // @phpstan-ignore-line
   }
