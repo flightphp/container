@@ -15,7 +15,12 @@ use ReflectionUnionType;
 
 final class Container implements ContainerInterface
 {
-  /** @var array<class-string, class-string|callable(ContainerInterface $container): object> */
+  /**
+   * @var array<class-string, array{
+   *   concrete: object|class-string|callable(ContainerInterface $container): object,
+   *   isSingleton: bool
+   * }>
+   */
   private array $entries = [];
 
   /**
@@ -23,24 +28,43 @@ final class Container implements ContainerInterface
    * @param class-string<T> $id
    * @return T
    * @throws NotFoundExceptionInterface
+   * @throws ContainerExceptionInterface
    */
   public function get(string $id): object
   {
     if ($this->has($id)) {
-      $entry = $this->entries[$id];
+      [
+        'concrete' => $concrete,
+        'isSingleton' => $isSingleton
+      ] = $this->entries[$id];
 
-      if (is_callable($entry)) {
+      if (is_callable($concrete)) {
         /** @var T */
-        $concrete = $entry($this);
+        $object = $concrete($this);
 
-        return $concrete;
+        if ($isSingleton) {
+          $this->singleton($id, $object);
+        }
+
+        return $object;
       }
 
-      $id = $entry;
+      if (is_string($concrete)) {
+        /** @var T */
+        $object = $this->resolve($concrete);
+
+        $this->singleton($id, $object);
+
+        return $object;
+      }
+
+      if (is_object($concrete) && $isSingleton) {
+        return $concrete;
+      }
     }
 
     /** @var T */
-    $object = $this->resolve($id);
+    $object = $this->resolve($concrete ?? $id);
 
     return $object;
   }
@@ -56,9 +80,27 @@ final class Container implements ContainerInterface
    * @param class-string<T> $id
    * @param class-string<T>|callable(ContainerInterface $container): T $concrete
    */
-  public function set(string $id, $concrete): void
+  public function set(string $id, $concrete): self
   {
-    $this->entries[$id] = $concrete;
+    $this->entries[$id]['concrete'] = $concrete;
+    $this->entries[$id]['isSingleton'] = false;
+
+    return $this;
+  }
+
+  /**
+   * @template T of object
+   * @param class-string<T>|T $id
+   */
+  public function singleton($id): self
+  {
+    $fqcn = is_object($id) ? get_class($id) : $id;
+    $concrete = func_num_args() === 2 ? func_get_arg(1) : $id;
+
+    $this->entries[$fqcn]['concrete'] = $concrete;
+    $this->entries[$fqcn]['isSingleton'] = true;
+
+    return $this;
   }
 
   /**

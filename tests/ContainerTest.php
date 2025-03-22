@@ -151,6 +151,30 @@ final class ContainerTest extends TestCase
     );
   }
 
+  public function test_can_set_a_singleton_from_fqcn(): void
+  {
+    $container = new Container;
+
+    $container->singleton(DateTimeImmutable::class);
+
+    $dateTimeImmutable = $container->get(DateTimeImmutable::class);
+    $dateTimeImmutable2 = $container->get(DateTimeImmutable::class);
+
+    self::assertSame($dateTimeImmutable, $dateTimeImmutable2);
+  }
+
+  public function test_can_set_an_implementation_as_singleton(): void
+  {
+    $container = new Container;
+
+    $container->singleton(ExampleInterface::class, ExampleImplementation::class);
+
+    $exampleImplementation = $container->get(ExampleInterface::class);
+    $exampleImplementation2 = $container->get(ExampleInterface::class);
+
+    self::assertSame($exampleImplementation, $exampleImplementation2);
+  }
+
   /** @return array{0: class-string}[] */
   public static function nonInstantiableClassStringsDataProvider(): array
   {
