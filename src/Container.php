@@ -32,39 +32,42 @@ final class Container implements ContainerInterface
    */
   public function get(string $id): object
   {
-    if ($this->has($id)) {
-      [
-        'concrete' => $concrete,
-        'isSingleton' => $isSingleton
-      ] = $this->entries[$id];
+    if (!$this->has($id)) {
+      /** @var T */
+      $object = $this->resolve($id);
 
-      if (is_callable($concrete)) {
-        /** @var T */
-        $object = $concrete($this);
-
-        if ($isSingleton) {
-          $this->singleton($id, $object);
-        }
-
-        return $object;
-      }
-
-      if (is_string($concrete)) {
-        /** @var T */
-        $object = $this->resolve($concrete);
-
-        $this->singleton($id, $object);
-
-        return $object;
-      }
-
-      if (is_object($concrete) && $isSingleton) {
-        return $concrete;
-      }
+      return $object;
     }
 
-    /** @var T */
-    $object = $this->resolve($concrete ?? $id);
+    [
+      'concrete' => $concrete,
+      'isSingleton' => $isSingleton
+    ] = $this->entries[$id];
+
+    switch (true) {
+      case is_callable($concrete):
+        /** @var T */
+        $object = $concrete($this);
+        break;
+
+      case is_string($concrete):
+        /** @var T */
+        $object = $this->resolve($concrete);
+        break;
+
+      case is_object($concrete) && $isSingleton:
+        /** @var T */
+        $object = $concrete;
+        break;
+
+      default:
+        /** @var T */
+        $object = $this->resolve(get_class($concrete));
+    }
+
+    if ($isSingleton) {
+      $this->singleton($id, $object);
+    }
 
     return $object;
   }
@@ -78,7 +81,7 @@ final class Container implements ContainerInterface
   /**
    * @template T of object
    * @param class-string<T> $id
-   * @param class-string<T>|callable(ContainerInterface $container): T $concrete
+   * @param class-string<T>|T|callable(ContainerInterface $container): T $concrete
    */
   public function set(string $id, $concrete): self
   {
@@ -95,6 +98,8 @@ final class Container implements ContainerInterface
   public function singleton($id): self
   {
     $fqcn = is_object($id) ? get_class($id) : $id;
+
+    /** @var T|class-string<T>|callable */
     $concrete = func_num_args() === 2 ? func_get_arg(1) : $id;
 
     $this->entries[$fqcn]['concrete'] = $concrete;

@@ -8,6 +8,11 @@
       "flight\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "flight\\tests\\": "tests"
+    }
+  },
   "authors": [
     {
       "name": "fadrian06",

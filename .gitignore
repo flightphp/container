@@ -2,3 +2,4 @@
 vendor
 phpstan.neon
 .phpunit.cache
+phpunit.xml
