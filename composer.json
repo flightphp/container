@@ -34,5 +34,12 @@
     "allow-plugins": {
       "phpstan/extension-installer": true
     }
+  },
+  "scripts": {
+    "ci": [
+      "phpunit",
+      "rector --dry-run",
+      "phpstan"
+    ]
   }
 }

@@ -23,6 +23,19 @@ final class Container implements ContainerInterface
    */
   private array $entries = [];
 
+  public static function getInstance(): self
+  {
+    static $container = null;
+
+    if (!$container) {
+      $container = new self;
+    }
+
+    assert($container instanceof self);
+
+    return $container;
+  }
+
   /**
    * @template T of object
    * @param class-string<T> $id
@@ -66,7 +79,7 @@ final class Container implements ContainerInterface
     }
 
     if ($isSingleton) {
-      $this->singleton($id, $object);
+      $this->singleton($id, $object); // @phpstan-ignore-line
     }
 
     return $object;
@@ -150,7 +163,10 @@ final class Container implements ContainerInterface
           throw new ContainerException("Failed to resolve class \"$id\" because param \"$name\" is missing a type hint");
         }
 
-        if ($type instanceof ReflectionUnionType) {
+        if (
+          class_exists('ReflectionUnionType')
+          && $type instanceof ReflectionUnionType
+        ) {
           throw new ContainerException("Failed to resolve class \"$id\" because of union type for param \"$name\"");
         }
 

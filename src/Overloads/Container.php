@@ -11,6 +11,11 @@ use Psr\Container\NotFoundExceptionInterface;
 if (!class_exists(Container::class)) {
   final class Container implements ContainerInterface
   {
+    public static function getInstance(): self
+    {
+      return new self;
+    }
+
     /**
      * @template T of object
      * @param class-string<T> $id

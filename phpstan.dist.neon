@@ -3,10 +3,14 @@ includes:
 
 parameters:
   level: max
+  phpVersion: 70400
   paths:
     - src
     - tests
     - rector.php
   excludePaths:
     - vendor
+    - tests/examples
   treatPhpDocTypesAsCertain: false
+  ignoreErrors:
+    - identifier: method.resultUnused

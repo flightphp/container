@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace flight\tests;
 
 use DateTimeImmutable;
+use DateTimeInterface;
 use flight\Container;
 use flight\tests\examples\ExampleImplementation;
 use flight\tests\examples\ExampleInterface;
@@ -12,6 +13,28 @@ use PHPUnit\Framework\TestCase;
 
 final class ContainerSingletonTest extends TestCase
 {
+  public function test_can_get_a_singleton_container_instance(): void
+  {
+    $container = Container::getInstance();
+
+    $container->singleton(
+      DateTimeInterface::class,
+      static fn(): DateTimeInterface => new DateTimeImmutable('2025-04-06')
+    );
+
+    self::assertSame(Container::getInstance(), Container::getInstance());
+
+    self::assertSame(
+      '2025-04-06',
+      $container->get(DateTimeInterface::class)->format('Y-m-d')
+    );
+
+    self::assertSame(
+      '2025-04-06',
+      Container::getInstance()->get(DateTimeInterface::class)->format('Y-m-d')
+    );
+  }
+
   public function test_can_set_a_singleton_from_fqcn(): void
   {
     $container = new Container;

@@ -13,6 +13,7 @@ return RectorConfig::configure()
     __DIR__ . '/tests',
   ])
   ->withSkipPath(__DIR__ . '/vendor')
+  ->withSkipPath(__DIR__ . '/tests/examples')
   ->withPhp74Sets()
   ->withFluentCallNewLine()
   ->withImportNames()
